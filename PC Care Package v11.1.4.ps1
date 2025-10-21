@@ -221,7 +221,7 @@ else {
 }
 
 write-Host "***Setting password for $Username to never expire***" -ForegroundColor Green -BackgroundColor Black
-	& WMIC USERACCOUNT WHERE "Name='$Username'" SET PasswordExpires=FALSE
+	Set-LocalUser -Name $Username -PasswordNeverExpires $true
 
 ## Sets PC to not auto-reboot on crash
 write-Host "***Setting policy for no auto-reboot on BSOD***" -ForegroundColor Green -BackgroundColor Black
@@ -429,6 +429,7 @@ write-Host "            *******(Press any key to exit)*******            " -Fore
 $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 sysdm.cpl /,3
 Exit
+
 
 
 
