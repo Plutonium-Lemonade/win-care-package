@@ -389,6 +389,10 @@ write-Host "***Enabling F8 boot menu options***" -ForegroundColor Green -Backgro
 
 
 ## Install applications utilizing winget. May rework into a function for cleaner execution and easier edits.
+## DotNet version specifically required for Dell Command Update to run and is not packaged with the install
+write-Host "Installing .NET Desktop Runtime 8" -ForegroundColor Green -BackgroundColor Black
+winget install --id Microsoft.DotNet.DesktopRuntime.8 --version 8.0.17 --silent --accept-package-agreements --accept-source-agreements
+
 write-Host "Installing Adobe Acrobat" -ForegroundColor Green -BackgroundColor Black
 winget install --id Adobe.Acrobat.Reader.64-bit --silent --accept-package-agreements --accept-source-agreements
 
@@ -429,6 +433,7 @@ write-Host "            *******(Press any key to exit)*******            " -Fore
 $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 sysdm.cpl /,3
 Exit
+
 
 
 
