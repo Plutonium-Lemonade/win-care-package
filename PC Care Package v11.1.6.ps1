@@ -389,8 +389,10 @@ write-Host "***Enabling F8 boot menu options***" -ForegroundColor Green -Backgro
 ##########################
 
 ## Installs latest version of WinGet package manager and updates sources
+write-Host "Installing/Updating WinGet" -ForegroundColor Green -BackgroundColor Black
 Invoke-RestMethod -uri https://aka.ms/getwinget -OutFile ".\winget.msixbundle"
 Add-AppxPackage -path ".\winget.msixbundle"
+Remove-Item -path ".\winget.msixbundle"
 winget source update
 
 ## Install applications utilizing winget. May rework into a function for cleaner execution and easier edits.
@@ -438,6 +440,7 @@ write-Host "            *******(Press any key to exit)*******            " -Fore
 $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 sysdm.cpl /,3
 Exit
+
 
 
 
