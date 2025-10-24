@@ -291,10 +291,10 @@ write-Host "***Setting up the advertising dumpster***" -ForegroundColor Green -B
 ## Removes most "junk apps" and prevents all from being installed on new profiles (exclusions listed)
 write-Host "***Taking out the trash***" -ForegroundColor Green -BackgroundColor Black
     Get-AppxPackage -AllUsers | where-object {
-	    $_.Name -notmatch "ShellExperienceHost|CloudExperienceHost|Search|StartMenuExperienceHost|VCLibs|AppResolverUX|AAD.BrokerPlugin|NET.Native|AccountsControl|CredDialogHost|PrintDialog|CallingShellApp|FilePicker|Apprep.ChxApp|NarratorQuick-Start|XGpuEjectDialog|Store|Dell|HP|Notepad|Terminal|heic|hevc|webp|Camera|Calculator|Photos|SoundRecorder|Paint|Calendar|windowscommunicationsapps"
+	    $_.Name -notmatch "ShellExperienceHost|CloudExperienceHost|Search|StartMenuExperienceHost|VCLibs|AppResolverUX|AAD.BrokerPlugin|NET.Native|AccountsControl|CredDialogHost|PrintDialog|CallingShellApp|FilePicker|Apprep.ChxApp|NarratorQuick-Start|XGpuEjectDialog|Store|Dell|HP|Notepad|Terminal|heic|hevc|webp|Camera|Calculator|Photos|SoundRecorder|Paint|Calendar|Winget|QuickAssist|VP9|windowscommunicationsapps"
     } | Remove-AppxPackage -erroraction silentlycontinue
     Get-AppxProvisionedPackage -online | where-object {
-	    $_.PackageName -notmatch "ShellExperienceHost|CloudExperienceHost|Search|StartMenuExperienceHost|VCLibs|AppResolverUX|AAD.BrokerPlugin|NET.Native|AccountsControl|CredDialogHost|PrintDialog|CallingShellApp|FilePicker|Apprep.ChxApp|NarratorQuick-Start|XGpuEjectDialog|Store|Dell|HP|Notepad|Terminal|HEIF|heic|hevc|webp|Camera|Calculator|Photos|SoundRecorder|Paint|Calendar|Winget|windowscommunicationsapps"
+	    $_.PackageName -notmatch "ShellExperienceHost|CloudExperienceHost|Search|StartMenuExperienceHost|VCLibs|AppResolverUX|AAD.BrokerPlugin|NET.Native|AccountsControl|CredDialogHost|PrintDialog|CallingShellApp|FilePicker|Apprep.ChxApp|NarratorQuick-Start|XGpuEjectDialog|Store|Dell|HP|Notepad|Terminal|HEIF|heic|hevc|webp|Camera|Calculator|Photos|SoundRecorder|Paint|Calendar|Winget|QuickAssist|VP9|windowscommunicationsapps"
 	} | Remove-AppxProvisionedPackage -online -erroraction silentlycontinue
 
 write-Host "***Disabling 'Featured Software'***" -ForegroundColor Green -BackgroundColor Black
@@ -388,22 +388,28 @@ write-Host "***Enabling F8 boot menu options***" -ForegroundColor Green -Backgro
 ## Applications Install ##
 ##########################
 
+## Installs latest version of WinGet package manager and updates sources
+write-Host "***Installing/Updating WinGet***" -ForegroundColor Green -BackgroundColor Black
+Invoke-RestMethod -uri https://aka.ms/getwinget -OutFile ".\winget.msixbundle"
+Add-AppxPackage -path ".\winget.msixbundle"
+Remove-Item -path ".\winget.msixbundle"
+winget source update
 
 ## Install applications utilizing winget. May rework into a function for cleaner execution and easier edits.
 ## DotNet version specifically required for Dell Command Update to run and is not packaged with the install
-write-Host "Installing .NET Desktop Runtime 8" -ForegroundColor Green -BackgroundColor Black
+write-Host "***Installing .NET Desktop Runtime 8***" -ForegroundColor Green -BackgroundColor Black
 winget install --id Microsoft.DotNet.DesktopRuntime.8 --version 8.0.17 --silent --accept-package-agreements --accept-source-agreements
 
-write-Host "Installing Adobe Acrobat" -ForegroundColor Green -BackgroundColor Black
+write-Host "***Installing Adobe Acrobat***" -ForegroundColor Green -BackgroundColor Black
 winget install --id Adobe.Acrobat.Reader.64-bit --silent --accept-package-agreements --accept-source-agreements
 
-write-Host "Installing Google Chrome" -ForegroundColor Green -BackgroundColor Black
+write-Host "***Installing Google Chrome***" -ForegroundColor Green -BackgroundColor Black
 winget install --id Google.Chrome --silent --accept-package-agreements --accept-source-agreements
 
-write-Host "Installing Mozilla Firefox" -ForegroundColor Green -BackgroundColor Black
+write-Host "***Installing Mozilla Firefox***" -ForegroundColor Green -BackgroundColor Black
 winget install --id Mozilla.Firefox --silent --accept-package-agreements --accept-source-agreements
 
-write-Host "Installing Microsoft Office 365" -ForegroundColor Green -BackgroundColor Black
+write-Host "***Installing Microsoft Office 365***" -ForegroundColor Green -BackgroundColor Black
 winget install --id Microsoft.Office --silent --accept-package-agreements --accept-source-agreements
 
 
@@ -434,6 +440,11 @@ write-Host "            *******(Press any key to exit)*******            " -Fore
 $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 sysdm.cpl /,3
 Exit
+
+
+
+
+
 
 
 
