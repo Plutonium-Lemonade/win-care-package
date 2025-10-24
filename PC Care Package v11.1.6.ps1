@@ -388,13 +388,10 @@ write-Host "***Enabling F8 boot menu options***" -ForegroundColor Green -Backgro
 ## Applications Install ##
 ##########################
 
-## Tests for existence of winget cmdlet and installs if it doesn't
-if (![bool](Get-Command winget -ErrorAction SilentlyContinue)) {
-	write-Host "Installing WinGet"
-	Install-PackageProvider -Name NuGet -Force | Out-Null
-	Install-Module -Name Microsoft.WinGet.Client -Force -Repository PSGallery | Out-Null
-	Repair-WinGetPackageManager -Force -Latest
-}
+## Installs latest version of WinGet package manager and updates sources
+Invoke-RestMethod -uri https://aka.ms/getwinget -OutFile ".\winget.msixbundle"
+Add-AppxPackage -path ".\winget.msixbundle"
+winget source update
 
 ## Install applications utilizing winget. May rework into a function for cleaner execution and easier edits.
 ## DotNet version specifically required for Dell Command Update to run and is not packaged with the install
@@ -441,6 +438,7 @@ write-Host "            *******(Press any key to exit)*******            " -Fore
 $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 sysdm.cpl /,3
 Exit
+
 
 
 
