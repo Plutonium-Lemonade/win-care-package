@@ -138,6 +138,8 @@ function unloaddefaulthive {
         reg unload "$reglocation"
 }
 
+## Check manufacturer as reported by WMI and store as variable for script reference
+$manufacturer = (Get-CimInstance -ClassName Win32_ComputerSystem).Manufacturer
 
 #########################
 ## Begin Menu Sequence ##
@@ -406,6 +408,10 @@ $appsToInstall = @(
     @{ Id = "Microsoft.Office"; Name = "Microsoft Office 365" },
     @{ Id = "Piriform.Recuva"; Name = "Piriform Recuva" }
 )
+
+if ($manufacturer -like "*Dell*" ) {
+    $appsToInstall += @{ Id = "Dell.CommandUpdate"; Name = "Dell Command Update" }
+}
 
 ## Iterate through apps and install
 foreach ($app in $appsToInstall) {
