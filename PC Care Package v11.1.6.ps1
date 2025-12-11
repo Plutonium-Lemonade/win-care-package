@@ -409,6 +409,8 @@ $appsToInstall = @(
     @{ Id = "Piriform.Recuva"; Name = "Piriform Recuva" }
 )
 
+## Define apps to remove with ID, name, and version if applicable
+## Array functions the same as appsToInstall
 $appsToRemove = @(
     @{ Id = "9NRX63209R7B"; Name = "New Outlook" }
 )
