@@ -409,11 +409,19 @@ $appsToInstall = @(
     @{ Id = "Piriform.Recuva"; Name = "Piriform Recuva" }
 )
 
+$appsToRemove = @(
+    @{ Id = "9NRX63209R7B"; Name = "New Outlook" }
+)
+
+## Manufacturer-specific installs/removals (Dell)
 if ($manufacturer -like "*Dell*" ) {
     $appsToInstall += @{ Id = "Dell.CommandUpdate"; Name = "Dell Command Update" }
+    $appsToRemove += @{ Id = "9PPRLNT023WC"; Name = "Dell Digital Delivery" }
+    $appsToRemove += @{ Id = "XP9B49CJ91XF01"; Name = "Dell Optimizer" }
+    $appsToRemove += @{ Id = "Dell.SupportAssist"; Name = "Dell SupportAssist" } # May not actually exist
 }
 
-## Iterate through apps and install
+## Iterate through apps and install with winget
 foreach ($app in $appsToInstall) {
     write-Host "***Installing $($app.Name)***" -ForegroundColor Green -BackgroundColor Black
 
@@ -431,6 +439,24 @@ foreach ($app in $appsToInstall) {
     }
 
     & winget $installArgs
+}
+
+## Iterate through apps and remove with winget
+foreach ($app in $appsToRemove) {
+    write-Host "***Removing $($app.Name)***" -ForegroundColor Green -BackgroundColor Black
+
+    $removeArgs = @(
+        "uninstall",
+        "--id", $app.Id,
+        "--silent"
+    )
+
+    # Add version parameter if specified
+    if ($app.Version) {
+        $removeArgs += "--version", $app.Version
+    }
+
+    & winget $removeArgs
 }
 
 ############################
