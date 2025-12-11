@@ -395,23 +395,37 @@ Add-AppxPackage -path ".\winget.msixbundle"
 Remove-Item -path ".\winget.msixbundle"
 winget source update
 
-## Install applications utilizing winget. May rework into a function for cleaner execution and easier edits.
-## DotNet version specifically required for Dell Command Update to run and is not packaged with the install
-write-Host "***Installing .NET Desktop Runtime 8***" -ForegroundColor Green -BackgroundColor Black
-winget install --id Microsoft.DotNet.DesktopRuntime.8 --version 8.0.17 --silent --accept-package-agreements --accept-source-agreements
+## Install applications through winget
+## Define apps to install with ID, name, and version if applicable
+## To add an app to the list, use "winget search appName" or reference https://winget.run
+$appsToInstall = @(
+    @{ Id = "Microsoft.DotNet.DesktopRuntime.8"; Name = ".NET Desktop Runtime 8"; Version = "8.0.17" },
+    @{ Id = "Adobe.Acrobat.Reader.64-bit"; Name = "Adobe Acrobat" },
+    @{ Id = "Google.Chrome"; Name = "Google Chrome" },
+    @{ Id = "Mozilla.Firefox"; Name = "Mozilla Firefox" },
+    @{ Id = "Microsoft.Office"; Name = "Microsoft Office 365" },
+    @{ Id = "Piriform.Recuva"; Name = "Piriform Recuva" }
+)
 
-write-Host "***Installing Adobe Acrobat***" -ForegroundColor Green -BackgroundColor Black
-winget install --id Adobe.Acrobat.Reader.64-bit --silent --accept-package-agreements --accept-source-agreements
+## Iterate through apps and install
+foreach ($app in $appsToInstall) {
+    write-Host "***Installing $($app.Name)***" -ForegroundColor Green -BackgroundColor Black
 
-write-Host "***Installing Google Chrome***" -ForegroundColor Green -BackgroundColor Black
-winget install --id Google.Chrome --silent --accept-package-agreements --accept-source-agreements
+    $installArgs = @(
+        "install",
+        "--id", $app.Id,
+        "--silent",
+        "--accept-package-agreements",
+        "--accept-source-agreements"
+    )
 
-write-Host "***Installing Mozilla Firefox***" -ForegroundColor Green -BackgroundColor Black
-winget install --id Mozilla.Firefox --silent --accept-package-agreements --accept-source-agreements
+    # Add version parameter if specified
+    if ($app.Version) {
+        $installArgs += "--version", $app.Version
+    }
 
-write-Host "***Installing Microsoft Office 365***" -ForegroundColor Green -BackgroundColor Black
-winget install --id Microsoft.Office --silent --accept-package-agreements --accept-source-agreements
-
+    & winget $installArgs
+}
 
 ############################
 ## Applications Uninstall ##
